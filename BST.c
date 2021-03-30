@@ -16,9 +16,9 @@ struct BST {
 };
 
 Node * createNode(int value);
+Node * insertNode(Node * root, int value);
 int sumOfTree(Node * root);
 void inOrderPrint(Node * root);
-void insertNode(Node * root, int value);
 void printArray(int *arr, int size);
 void postOrderPrint(Node * root); 
 
@@ -27,13 +27,13 @@ int main() {
     srand(time(0)); 
     int n, i, num = 10, sum; 
     n = 20; 
-    Node * root = createNode(23); 
+    Node * root = NULL; 
     int *arr = calloc(n, sizeof(int)); 
     for (i = 0; i < n; i++) { 
         num = (rand() % 1000);
         sum += num; 
         arr[i] = num; 
-        insertNode(root, num);  
+        root = insertNode(root, num);  
     }
     printf("The numbers inserted into the tree: ");
     printArray(arr, n); 
@@ -49,27 +49,20 @@ int main() {
     return 0; 
 }
 
-void insertNode(Node * root, int value) { 
+Node * insertNode(Node * root, int value) { 
     Node * node = createNode(value); 
     if (root == NULL) {
-        root = node; 
+        return node;
     }
-    if (root->value > value) {
-        if(root->left == NULL) {
-            root->left = node;
-            return; 
-        }
-        insertNode(root->left, value); 
-    } else if (root->value < value) {
-        if(root->right == NULL) {
-            root->right = node;
-            return; 
-        }
-        insertNode(root->right, value); 
+    if (node->value == root->value) {
+        return root; 
+    } 
+    if (node->value > root->value) {
+        root->right = insertNode(root->right, value); 
     } else { 
-        return; 
+        root->left = insertNode(root->left, value); 
     }
-
+    return root; 
 }
 
 Node * createNode(int value) { 
